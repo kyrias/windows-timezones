@@ -6,6 +6,13 @@ mod generated;
 pub use generated::WindowsTimezone;
 
 #[cfg(feature = "std")]
+impl std::fmt::Display for generated::WindowsTimezone {
+    fn fmt(&self, f: &mut core::fmt::Formatter<'_>) -> core::fmt::Result {
+        self.name().fmt(f)
+    }
+}
+
+#[cfg(feature = "std")]
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
 /// An error returned when parsing a [`WindowsTimezone`] using [`FromStr::from_str`](std::str::FromStr::from_str) fails.
 pub struct ParseWindowsTimezoneError;
@@ -42,6 +49,11 @@ mod tests {
         assert_eq!(
             "W. Europe Standard Time".parse::<WindowsTimezone>(),
             Ok(WindowsTimezone::WEuropeStandardTime),
+        );
+
+        assert_eq!(
+            WindowsTimezone::WEuropeStandardTime.name(),
+            "W. Europe Standard Time",
         );
 
         assert_eq!(

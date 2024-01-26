@@ -215,6 +215,14 @@ fn generate_enum(state: State) -> String {
                 }
             }
 
+            pub fn name(self) -> &'static str {
+                match self {
+                    #(
+                        Self::#type_variants => #timezone_windows_names
+                    ),*
+                }
+            }
+
             pub fn tzdb_id(self) -> &'static str {
                 match self {
                     #(
