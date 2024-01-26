@@ -1,6 +1,8 @@
 use std::{
+    collections::HashSet,
     fs::File,
     io::{Read, Write},
+    iter,
     path::Path,
 };
 
@@ -86,6 +88,7 @@ struct Timezone {
     user_friendly_name: String,
     windows_name: String,
     tzdb_id: String,
+    alt_tzdb_ids: HashSet<String>,
 }
 
 #[derive(Default, Debug)]
@@ -145,8 +148,15 @@ impl State {
                     self.current_timezone = Some(Timezone {
                         user_friendly_name,
                         windows_name,
+                        alt_tzdb_ids: iter::once(tzdb_id.clone()).collect(),
                         tzdb_id,
                     });
+                } else {
+                    if let Some(tz) = &mut self.current_timezone {
+                        for fragment in tzdb_id.split(' ').filter(|x| !x.is_empty()) {
+                            tz.alt_tzdb_ids.insert(fragment.to_owned());
+                        }
+                    }
                 }
             }
             _ => {}
@@ -167,9 +177,13 @@ fn generate_enum(state: State) -> String {
     let mut timezone_descriptions = Vec::new();
     let mut tzdb_ids = Vec::new();
 
+    let mut try_from_tzid = Vec::new();
+    let mut try_from_windows = Vec::new();
+
     for timezone in state.timezones {
         let variant_name = convert_bad_chars(&timezone.windows_name).to_upper_camel_case();
-        type_variants.push(Ident::new(&variant_name, Span::call_site()));
+        let windows_variant = Ident::new(&variant_name, Span::call_site());
+        type_variants.push(windows_variant.clone());
         type_jsonschema_variants.push(variant_name.to_lower_camel_case());
         if timezone.windows_name == "UTC" {
             type_default.push(quote! { #[default] });
@@ -182,9 +196,16 @@ fn generate_enum(state: State) -> String {
             Span::call_site(),
         ));
 
-        timezone_windows_names.push(timezone.windows_name);
+        timezone_windows_names.push(timezone.windows_name.clone());
         timezone_descriptions.push(timezone.user_friendly_name);
         tzdb_ids.push(timezone.tzdb_id);
+
+        let mut alt_ids: Vec<_> = timezone.alt_tzdb_ids.into_iter().collect();
+        alt_ids.sort(); // hashset has random order, but generated code be the same every time
+        for tzid in alt_ids {
+            try_from_tzid.push(Ident::new(&convert_bad_chars(&tzid), Span::call_site()));
+            try_from_windows.push(windows_variant.clone());
+        }
     }
 
     let jsonschema_impl = generate_jsonschema_impl(&type_jsonschema_variants);
@@ -239,6 +260,20 @@ fn generate_enum(state: State) -> String {
                     #(
                         WindowsTimezone::#type_variants => ::chrono_tz::Tz::#chrono_tz_variants
                     ),*
+                }
+            }
+        }
+        #[cfg(feature = "chrono-tz")]
+        impl TryFrom<::chrono_tz::Tz> for WindowsTimezone {
+            type Error = crate::FromChronoTzError;
+
+            fn try_from(value: ::chrono_tz::Tz) -> Result<Self, Self::Error> {
+                use ::chrono_tz::Tz;
+                match value {
+                    #(
+                        Tz::#try_from_tzid => Ok(WindowsTimezone::#try_from_windows),
+                    )*
+                    _ => Err(crate::FromChronoTzError),
                 }
             }
         }
