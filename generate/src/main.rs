@@ -12,7 +12,7 @@ use proc_macro2::{Ident, Span};
 use quick_xml::events::Event;
 use quote::quote;
 
-const CLDR_VERSION: &'static str = "43";
+const CLDR_VERSION: &'static str = "45";
 
 fn main() -> anyhow::Result<()> {
     let filename = format!("windowsZones.{CLDR_VERSION}.xml");
@@ -27,6 +27,7 @@ fn main() -> anyhow::Result<()> {
         eprintln!("Fetching remote");
         let url = format!("https://raw.githubusercontent.com/unicode-org/cldr/release-{CLDR_VERSION}/common/supplemental/windowsZones.xml");
         let body = reqwest::blocking::get(url)
+            .and_then(|r| r.error_for_status())
             .context("failed to get CLDR data file")?
             .text()
             .context("failed to get CLDR data file text content")?;
@@ -109,13 +110,20 @@ impl State {
                 return Ok(false);
             }
             Event::Comment(comment) => {
-                if let Some(current) = self.current_timezone.take() {
-                    self.timezones.push(current);
-                }
                 let timezone = String::from_utf8_lossy(&comment.into_inner())
                     .to_string()
                     .trim()
                     .to_string();
+                // Ignore comments unknown comments.  Previously the only comments in the file were
+                // the headers dividing up the different time zones, but now there are some
+                // additional comments about what Microsoft *may* do in the future.
+                if !timezone.starts_with("(UTC") {
+                    return Ok(true);
+                }
+
+                if let Some(current) = self.current_timezone.take() {
+                    self.timezones.push(current);
+                }
                 self.current_friendly_name = Some(timezone);
             }
             Event::Empty(tag) if tag.local_name().as_ref() == b"mapZone" => {
