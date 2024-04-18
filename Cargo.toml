@@ -1,6 +1,6 @@
 [package]
 name = "windows-timezones"
-version = "0.3.0"
+version = "0.3.1"
 edition = "2021"
 description = "Windows timezone list from the Unicode CLDR project"
 repository = "https://github.com/kyrias/windows-timezones"
@@ -18,7 +18,7 @@ required-features = ["update-schema"]
 
 [dependencies]
 anyhow = { version = "1", optional = true }
-chrono-tz = { version = "0.8", optional = true }
+chrono-tz = { version = "0.8", default-features = false, optional = true }
 heck = { version = "0.4", optional = true }
 schemars = { version = "0.8", default-features = false, optional = true, features = ["derive"] }
 serde = { version = "1", default-features = false, optional = true, features = ["derive"] }
