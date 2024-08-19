@@ -40,7 +40,7 @@ fn main() -> anyhow::Result<()> {
     };
 
     let mut reader = quick_xml::reader::Reader::from_str(&body);
-    reader.check_comments(true);
+    reader.config_mut().check_comments = true;
 
     let mut buf = Vec::new();
     let mut state = State::default();
