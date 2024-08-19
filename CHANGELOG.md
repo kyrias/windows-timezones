@@ -8,6 +8,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Changed
+
+- BREAKING: Upgraded all dependencies. ([#13](https://github.com/kyrias/windows-timezones/pull/13))
+
 
 ## [0.3.1]
 
