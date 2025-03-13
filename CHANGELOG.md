@@ -8,11 +8,21 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+This release upgrades to release 46.1 of the CLDR data.
+
 ### Changed
 
-- BREAKING: Upgraded all dependencies. ([#14](https://github.com/kyrias/windows-timezones/pull/14))
+- BREAKING: Upgraded all dependencies.  ([#14](https://github.com/kyrias/windows-timezones/pull/14))
   - `chrono-tz` upgraded from 0.9 to 0.10.  Support for 0.9 is retained under the `chrono-tz-0_9` feature.
   - `strum` upgraded from 0.26 to 0.27.  The derive macros are mutually incompatible so support for the old version could not be retained.
+
+### Removed
+
+- Removed deprecated tzdb IDs CST6CDT, EST5EDT, MST7MDT, PST8PDT.  ([CLDR-17901])
+- Removed tzdb ID Asia/Choibalsan which is now an alias for Asia/Ulaanbaatar.  ([CLDR-17960])
+
+[CLDR-17901]: https://github.com/unicode-org/cldr/pull/3971
+[CLDR-17960]: https://github.com/unicode-org/cldr/pull/4065
 
 
 ## [0.4.0]
