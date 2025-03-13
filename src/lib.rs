@@ -27,19 +27,28 @@ impl std::fmt::Display for ParseWindowsTimezoneError {
 #[cfg(feature = "std")]
 impl std::error::Error for ParseWindowsTimezoneError {}
 
-#[cfg(all(feature = "std", feature = "chrono-tz"))]
+#[cfg(all(
+    feature = "std",
+    any(feature = "chrono-tz-0_9", feature = "chrono-tz-0_10")
+))]
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
 /// An error returned when failing to convert a `chrono_tz::Tz` to a [`WindowsTimezone`] using [`TryFrom::try_from`].
 pub struct FromChronoTzError;
 
-#[cfg(all(feature = "std", feature = "chrono-tz"))]
+#[cfg(all(
+    feature = "std",
+    any(feature = "chrono-tz-0_9", feature = "chrono-tz-0_10")
+))]
 impl std::fmt::Display for FromChronoTzError {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         "there is no corresponding Windows timezone identifier for the given IANA timezone".fmt(f)
     }
 }
 
-#[cfg(all(feature = "std", feature = "chrono-tz"))]
+#[cfg(all(
+    feature = "std",
+    any(feature = "chrono-tz-0_9", feature = "chrono-tz-0_10")
+))]
 impl std::error::Error for FromChronoTzError {}
 
 #[cfg(test)]
@@ -77,15 +86,28 @@ mod tests {
         );
     }
 
-    #[cfg(feature = "chrono-tz")]
+    #[cfg(feature = "chrono-tz-0_9")]
     #[test]
-    fn chrono_tz_conversion() {
+    fn chrono_tz_0_9_conversion() {
         assert_eq!(
-            Into::<chrono_tz::Tz>::into(WindowsTimezone::WEuropeStandardTime),
-            chrono_tz::Tz::Europe__Berlin
+            Into::<chrono_tz_0_9::Tz>::into(WindowsTimezone::WEuropeStandardTime),
+            chrono_tz_0_9::Tz::Europe__Berlin
         );
         assert_eq!(
-            WindowsTimezone::try_from(chrono_tz::Tz::Europe__Berlin),
+            WindowsTimezone::try_from(chrono_tz_0_9::Tz::Europe__Berlin),
+            Ok(WindowsTimezone::WEuropeStandardTime)
+        );
+    }
+
+    #[cfg(feature = "chrono-tz-0_10")]
+    #[test]
+    fn chrono_tz_0_10_conversion() {
+        assert_eq!(
+            Into::<chrono_tz_0_10::Tz>::into(WindowsTimezone::WEuropeStandardTime),
+            chrono_tz_0_10::Tz::Europe__Berlin
+        );
+        assert_eq!(
+            WindowsTimezone::try_from(chrono_tz_0_10::Tz::Europe__Berlin),
             Ok(WindowsTimezone::WEuropeStandardTime)
         );
     }

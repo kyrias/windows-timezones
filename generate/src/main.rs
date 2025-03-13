@@ -261,22 +261,47 @@ fn generate_enum(state: State) -> String {
             }
         }
 
-        #[cfg(feature = "chrono-tz")]
-        impl From<WindowsTimezone> for ::chrono_tz::Tz {
+        #[cfg(feature = "chrono-tz-0_9")]
+        impl From<WindowsTimezone> for ::chrono_tz_0_9::Tz {
             fn from(value: WindowsTimezone) -> Self {
                 match value {
                     #(
-                        WindowsTimezone::#type_variants => ::chrono_tz::Tz::#chrono_tz_variants
+                        WindowsTimezone::#type_variants => ::chrono_tz_0_9::Tz::#chrono_tz_variants
                     ),*
                 }
             }
         }
-        #[cfg(feature = "chrono-tz")]
-        impl TryFrom<::chrono_tz::Tz> for WindowsTimezone {
+        #[cfg(feature = "chrono-tz-0_9")]
+        impl TryFrom<::chrono_tz_0_9::Tz> for WindowsTimezone {
             type Error = crate::FromChronoTzError;
 
-            fn try_from(value: ::chrono_tz::Tz) -> Result<Self, Self::Error> {
-                use ::chrono_tz::Tz;
+            fn try_from(value: ::chrono_tz_0_9::Tz) -> Result<Self, Self::Error> {
+                use ::chrono_tz_0_9::Tz;
+                match value {
+                    #(
+                        Tz::#try_from_tzid => Ok(WindowsTimezone::#try_from_windows),
+                    )*
+                    _ => Err(crate::FromChronoTzError),
+                }
+            }
+        }
+
+        #[cfg(feature = "chrono-tz-0_10")]
+        impl From<WindowsTimezone> for ::chrono_tz_0_10::Tz {
+            fn from(value: WindowsTimezone) -> Self {
+                match value {
+                    #(
+                        WindowsTimezone::#type_variants => ::chrono_tz_0_10::Tz::#chrono_tz_variants
+                    ),*
+                }
+            }
+        }
+        #[cfg(feature = "chrono-tz-0_10")]
+        impl TryFrom<::chrono_tz_0_10::Tz> for WindowsTimezone {
+            type Error = crate::FromChronoTzError;
+
+            fn try_from(value: ::chrono_tz_0_10::Tz) -> Result<Self, Self::Error> {
+                use ::chrono_tz_0_10::Tz;
                 match value {
                     #(
                         Tz::#try_from_tzid => Ok(WindowsTimezone::#try_from_windows),

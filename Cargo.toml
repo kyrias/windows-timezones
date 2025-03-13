@@ -18,22 +18,28 @@ required-features = ["update-schema"]
 
 [dependencies]
 anyhow = { version = "1", optional = true }
-chrono-tz = { version = "0.9", default-features = false, optional = true }
 heck = { version = "0.5", optional = true }
 schemars = { version = "0.8", default-features = false, optional = true, features = ["derive"] }
 serde = { version = "1", default-features = false, optional = true, features = ["derive"] }
 sqlx = { version = "0.8", default-features = false, optional = true, features = ["macros"] }
-strum = { version = "0.26", default-features = false, features = ["derive"], optional = true }
+strum = { version = "0.27", default-features = false, features = ["derive"], optional = true }
+
+chrono-tz-0_9 = { package = "chrono-tz", version = "0.9", default-features = false, optional = true }
+chrono-tz-0_10 = { package = "chrono-tz", version = "0.10", default-features = false, optional = true }
 
 [features]
 default = ["std"]
 
-std = []
-chrono-tz = ["dep:chrono-tz"]
 schemars = ["dep:schemars"]
 serde = ["dep:serde"]
 sqlx = ["dep:sqlx"]
+std = []
 strum = ["dep:strum"]
+
+chrono-tz = ["chrono-tz-0_10"]
+chrono-tz-0_9 = ["dep:chrono-tz-0_9"]
+chrono-tz-0_10 = ["dep:chrono-tz-0_10"]
+
 
 ## Internal features.
 update-schema = ["anyhow", "heck", "strum"]
