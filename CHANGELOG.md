@@ -8,6 +8,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Changed
+
+- BREAKING: Upgraded all dependencies. ([#14](https://github.com/kyrias/windows-timezones/pull/14))
+  - `strum` upgraded from 0.26 to 0.27.  The derive macros are mutually incompatible so support for the old version could not be retained.
+
 
 ## [0.4.0]
 
