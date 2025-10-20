@@ -9,6 +9,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 
+## [0.5.1]
+
+### Fixed
+
+- Fixed `schemars::JsonSchema` implementation to use correct casing.  ([#16](https://github.com/kyrias/windows-timezones/pull/16))
+
+
 ## [0.5.0]
 
 This release upgrades to release 46.1 of the CLDR data.
@@ -82,8 +89,9 @@ This release upgrades to release 43 of the CLDR data.
 - Mountain Standard Time (Mexico) now corresponds to the tzdb ID America/Mazatlan instead af America/Chihuahua. ([CLDR-16386](https://github.com/unicode-org/cldr/pull/2716))
 
 
-[Unreleased]: https://github.com/kyrias/windows-timezones/compare/0.5.0...main
-[0.4.0]: https://github.com/kyrias/windows-timezones/compare/0.4.0...0.5.0
+[Unreleased]: https://github.com/kyrias/windows-timezones/compare/0.5.1...main
+[0.5.1]: https://github.com/kyrias/windows-timezones/compare/0.5.0...0.5.1
+[0.5.0]: https://github.com/kyrias/windows-timezones/compare/0.4.0...0.5.0
 [0.4.0]: https://github.com/kyrias/windows-timezones/compare/0.3.1...0.4.0
 [0.3.1]: https://github.com/kyrias/windows-timezones/compare/0.3.0...0.3.1
 [0.3.0]: https://github.com/kyrias/windows-timezones/compare/0.2.1...0.3.0

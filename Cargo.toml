@@ -1,6 +1,6 @@
 [package]
 name = "windows-timezones"
-version = "0.5.0"
+version = "0.5.1"
 edition = "2021"
 description = "Windows timezone list from the Unicode CLDR project"
 repository = "https://github.com/kyrias/windows-timezones"
