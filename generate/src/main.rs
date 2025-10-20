@@ -7,7 +7,7 @@ use std::{
 };
 
 use anyhow::Context;
-use heck::{ToLowerCamelCase, ToUpperCamelCase};
+use heck::ToUpperCamelCase;
 use proc_macro2::{Ident, Span};
 use quick_xml::events::Event;
 use quote::quote;
@@ -192,7 +192,7 @@ fn generate_enum(state: State) -> String {
         let variant_name = convert_bad_chars(&timezone.windows_name).to_upper_camel_case();
         let windows_variant = Ident::new(&variant_name, Span::call_site());
         type_variants.push(windows_variant.clone());
-        type_jsonschema_variants.push(variant_name.to_lower_camel_case());
+        type_jsonschema_variants.push(variant_name.to_upper_camel_case());
         if timezone.windows_name == "UTC" {
             type_default.push(quote! { #[default] });
         } else {
